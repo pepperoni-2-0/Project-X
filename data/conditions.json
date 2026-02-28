@@ -1,0 +1,456 @@
+[
+    {
+        "name": "Flu",
+        "symptoms": [
+            "Fever",
+            "Cough",
+            "Fatigue",
+            "Body Ache",
+            "Chills"
+        ],
+        "questions": [
+            "Do you have fever?",
+            "Do you have body pain?"
+        ],
+        "risk": "Medium",
+        "action": "Rest and hydration",
+        "weights": {
+            "Fever": 2,
+            "Cough": 2,
+            "Fatigue": 1,
+            "Body Ache": 1,
+            "Chills": 1
+        }
+    },
+    {
+        "name": "Common Cold",
+        "symptoms": [
+            "Runny Nose",
+            "Sore Throat",
+            "Cough",
+            "Headache"
+        ],
+        "questions": [
+            "Are you experiencing any nasal congestion?",
+            "Is your throat painful when swallowing?"
+        ],
+        "risk": "Low",
+        "action": "Over-the-counter cold medication, warm fluids",
+        "weights": {
+            "Runny Nose": 2,
+            "Sore Throat": 2,
+            "Cough": 1,
+            "Headache": 1
+        }
+    },
+    {
+        "name": "COVID-like Infection",
+        "symptoms": [
+            "Fever",
+            "Cough",
+            "Fatigue",
+            "Breathing Difficulty",
+            "Body Ache"
+        ],
+        "questions": [
+            "Are you experiencing loss of taste or smell?",
+            "Have you been in contact with anyone confirmed positive?"
+        ],
+        "risk": "High",
+        "action": "Isolate, get tested, monitor oxygen levels",
+        "weights": {
+            "Fever": 2,
+            "Cough": 2,
+            "Fatigue": 1,
+            "Breathing Difficulty": 5,
+            "Body Ache": 1
+        }
+    },
+    {
+        "name": "Pneumonia",
+        "symptoms": [
+            "Cough",
+            "Fever",
+            "Chills",
+            "Breathing Difficulty",
+            "Chest Pain"
+        ],
+        "questions": [
+            "Is your cough producing yellow or green mucus?",
+            "Does it hurt to breathe deeply?"
+        ],
+        "risk": "High",
+        "action": "Seek urgent medical care",
+        "weights": {
+            "Cough": 2,
+            "Fever": 2,
+            "Chills": 1,
+            "Breathing Difficulty": 15,
+            "Chest Pain": 10
+        }
+    },
+    {
+        "name": "Asthma Attack",
+        "symptoms": [
+            "Breathing Difficulty",
+            "Chest Pain",
+            "Cough"
+        ],
+        "questions": [
+            "Are you wheezing?",
+            "Do you have your inhaler accessible?"
+        ],
+        "risk": "High",
+        "action": "Use rescue inhaler immediately, seek emergency care if not improving",
+        "weights": {
+            "Breathing Difficulty": 15,
+            "Chest Pain": 5,
+            "Cough": 1
+        }
+    },
+    {
+        "name": "Dengue",
+        "symptoms": [
+            "High Temperature",
+            "Headache",
+            "Body Ache",
+            "Skin Rash",
+            "Vomiting"
+        ],
+        "questions": [
+            "Do you have pain behind your eyes?",
+            "Are you experiencing any unusual bleeding or bruising?"
+        ],
+        "risk": "High",
+        "action": "Rest, hydrate heavily, monitor blood counts, avoid aspirin/ibuprofen",
+        "weights": {
+            "High Temperature": 3,
+            "Headache": 2,
+            "Body Ache": 3,
+            "Skin Rash": 2,
+            "Vomiting": 2
+        }
+    },
+    {
+        "name": "Malaria",
+        "symptoms": [
+            "Fever",
+            "Chills",
+            "Sweating",
+            "Headache",
+            "Fatigue"
+        ],
+        "questions": [
+            "Have you traveled to a malaria-endemic region recently?",
+            "Do your fever and chills come and go in cycles?"
+        ],
+        "risk": "High",
+        "action": "Medical evaluation and antimalarial medication required",
+        "weights": {
+            "Fever": 3,
+            "Chills": 3,
+            "Sweating": 2,
+            "Headache": 1,
+            "Fatigue": 1
+        }
+    },
+    {
+        "name": "Typhoid",
+        "symptoms": [
+            "High Temperature",
+            "Fatigue",
+            "Abdominal Pain",
+            "Headache",
+            "Diarrhea"
+        ],
+        "questions": [
+            "Has your fever been gradually increasing over days?",
+            "Are you experiencing any rose-colored spots on your chest?"
+        ],
+        "risk": "Medium",
+        "action": "Antibiotic treatment required, maintain hygiene",
+        "weights": {
+            "High Temperature": 2,
+            "Fatigue": 1,
+            "Abdominal Pain": 2,
+            "Headache": 1,
+            "Diarrhea": 2
+        }
+    },
+    {
+        "name": "Food Poisoning",
+        "symptoms": [
+            "Nausea",
+            "Vomiting",
+            "Diarrhea",
+            "Abdominal Pain",
+            "Fever"
+        ],
+        "questions": [
+            "Did you eat anything unusual or outside in the last 24 hours?",
+            "Are you able to keep down small sips of water?"
+        ],
+        "risk": "Medium",
+        "action": "Stay hydrated, rest, avoid solid foods temporarily",
+        "weights": {
+            "Nausea": 2,
+            "Vomiting": 3,
+            "Diarrhea": 3,
+            "Abdominal Pain": 2,
+            "Fever": 1
+        }
+    },
+    {
+        "name": "Gastroenteritis",
+        "symptoms": [
+            "Diarrhea",
+            "Vomiting",
+            "Abdominal Pain",
+            "Nausea",
+            "Headache"
+        ],
+        "questions": [
+            "Are there any signs of blood in your stool?",
+            "Has anyone else in your household been sick?"
+        ],
+        "risk": "Medium",
+        "action": "High fluid intake, oral rehydration salts",
+        "weights": {
+            "Diarrhea": 3,
+            "Vomiting": 2,
+            "Abdominal Pain": 2,
+            "Nausea": 2,
+            "Headache": 1
+        }
+    },
+    {
+        "name": "Dehydration",
+        "symptoms": [
+            "Dehydration Signs",
+            "Dizziness",
+            "Fatigue",
+            "Headache",
+            "Dry Mouth"
+        ],
+        "questions": [
+            "Is your urine dark yellow or are you urinating less often?",
+            "Do you feel very thirsty?"
+        ],
+        "risk": "Medium",
+        "action": "Drink fluids, electrolytes, rest in cool area",
+        "weights": {
+            "Dehydration Signs": 5,
+            "Dizziness": 2,
+            "Fatigue": 1,
+            "Headache": 1,
+            "Dry Mouth": 2
+        }
+    },
+    {
+        "name": "Migraine",
+        "symptoms": [
+            "Headache",
+            "Nausea",
+            "Vomiting",
+            "Blurred Vision",
+            "Dizziness"
+        ],
+        "questions": [
+            "Is the pain throbbing and on one side of your head?",
+            "Are you sensitive to light or sound?"
+        ],
+        "risk": "Medium",
+        "action": "Rest in dark quiet room, take prescribed migraine medication",
+        "weights": {
+            "Headache": 4,
+            "Nausea": 2,
+            "Vomiting": 1,
+            "Blurred Vision": 2,
+            "Dizziness": 1
+        }
+    },
+    {
+        "name": "Hypertension Crisis",
+        "symptoms": [
+            "High Blood Pressure",
+            "Chest Pain",
+            "Headache",
+            "Blurred Vision",
+            "Breathing Difficulty"
+        ],
+        "questions": [
+            "Have you checked your blood pressure recently?",
+            "Are you experiencing numbness or weakness in your body?"
+        ],
+        "risk": "Critical",
+        "action": "Seek emergency medical help immediately",
+        "weights": {
+            "High Blood Pressure": 5,
+            "Chest Pain": 10,
+            "Headache": 2,
+            "Blurred Vision": 3,
+            "Breathing Difficulty": 10
+        }
+    },
+    {
+        "name": "Hypoglycemia",
+        "symptoms": [
+            "Low Blood Sugar Symptoms",
+            "Sweating",
+            "Dizziness",
+            "Fatigue",
+            "Blurred Vision"
+        ],
+        "questions": [
+            "Are you diabetic and taking insulin or medication?",
+            "Do you feel confused or irritable?"
+        ],
+        "risk": "High",
+        "action": "Consume fast-acting sugar or juice immediately",
+        "weights": {
+            "Low Blood Sugar Symptoms": 5,
+            "Sweating": 2,
+            "Dizziness": 2,
+            "Fatigue": 2,
+            "Blurred Vision": 2
+        }
+    },
+    {
+        "name": "Urinary Infection",
+        "symptoms": [
+            "Burning Urination",
+            "Frequent Urination",
+            "Abdominal Pain",
+            "Fever",
+            "Chills"
+        ],
+        "questions": [
+            "Is there blood in your urine?",
+            "Does your lower back or side ache?"
+        ],
+        "risk": "Medium",
+        "action": "Drink plenty of water, consult doctor for antibiotics",
+        "weights": {
+            "Burning Urination": 4,
+            "Frequent Urination": 3,
+            "Abdominal Pain": 1,
+            "Fever": 1,
+            "Chills": 1
+        }
+    },
+    {
+        "name": "Allergic Reaction",
+        "symptoms": [
+            "Skin Rash",
+            "Swelling",
+            "Breathing Difficulty",
+            "Dizziness",
+            "Nausea"
+        ],
+        "questions": [
+            "Do you feel your throat tightening?",
+            "Were you exposed to a known allergen recently?"
+        ],
+        "risk": "High",
+        "action": "Use antihistamine, if breathing is difficult use auto-injector & call emergency",
+        "weights": {
+            "Skin Rash": 2,
+            "Swelling": 3,
+            "Breathing Difficulty": 15,
+            "Dizziness": 1,
+            "Nausea": 1
+        }
+    },
+    {
+        "name": "Bronchitis",
+        "symptoms": [
+            "Cough",
+            "Fatigue",
+            "Breathing Difficulty",
+            "Chest Pain",
+            "Fever"
+        ],
+        "questions": [
+            "Are you coughing up clear, white, yellowish, or green mucus?",
+            "Did you have a cold recently?"
+        ],
+        "risk": "Medium",
+        "action": "Rest, fluids, use a humidifier, consult a doctor if severe",
+        "weights": {
+            "Cough": 4,
+            "Fatigue": 1,
+            "Breathing Difficulty": 5,
+            "Chest Pain": 2,
+            "Fever": 1
+        }
+    },
+    {
+        "name": "Heat Exhaustion",
+        "symptoms": [
+            "Sweating",
+            "Dizziness",
+            "Fatigue",
+            "Nausea",
+            "Headache"
+        ],
+        "questions": [
+            "Have you been exercising or working in hot conditions?",
+            "Is your skin cool, moist with goosebumps when in the heat?"
+        ],
+        "risk": "Medium",
+        "action": "Move to a cooler place, stop all activity, drink cool water",
+        "weights": {
+            "Sweating": 3,
+            "Dizziness": 2,
+            "Fatigue": 2,
+            "Nausea": 1,
+            "Headache": 1
+        }
+    },
+    {
+        "name": "Appendicitis",
+        "symptoms": [
+            "Abdominal Pain",
+            "Nausea",
+            "Vomiting",
+            "Fever",
+            "Diarrhea"
+        ],
+        "questions": [
+            "Is the pain starting near your navel and shifting to your lower right abdomen?",
+            "Does the pain worsen if you cough, walk or make other jarring movements?"
+        ],
+        "risk": "Critical",
+        "action": "Go to the emergency room immediately",
+        "weights": {
+            "Abdominal Pain": 8,
+            "Nausea": 2,
+            "Vomiting": 2,
+            "Fever": 1,
+            "Diarrhea": 1
+        }
+    },
+    {
+        "name": "Heart Attack Suspicion",
+        "symptoms": [
+            "Chest Pain",
+            "Breathing Difficulty",
+            "Sweating",
+            "Dizziness",
+            "Nausea"
+        ],
+        "questions": [
+            "Does the pain spread to your arm, back, neck, jaw or stomach?",
+            "Does the chest pain feel like pressure, tightness, or a squeezing ache?"
+        ],
+        "risk": "Critical",
+        "action": "Call emergency services immediately, do not drive yourself",
+        "weights": {
+            "Chest Pain": 15,
+            "Breathing Difficulty": 10,
+            "Sweating": 3,
+            "Dizziness": 2,
+            "Nausea": 2
+        }
+    }
+]
