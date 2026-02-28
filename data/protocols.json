@@ -1,0 +1,101 @@
+[
+  {
+    "name": "dengue",
+    "nodes": [
+      {
+        "id": 1772310280615,
+        "type": "question",
+        "text": "fever??",
+        "weight": 1,
+        "yes": 1772310287743
+      },
+      {
+        "id": 1772310287743,
+        "type": "question",
+        "text": "chest pain",
+        "weight": 1,
+        "no": 1772310324724
+      },
+      {
+        "id": 1772310324724,
+        "type": "question",
+        "text": "fatigue?",
+        "weight": 1,
+        "yes": 1772310337130
+      },
+      {
+        "id": 1772310337130,
+        "type": "result",
+        "risk": "High",
+        "action": "get platelets checked and get doctor checked"
+      }
+    ],
+    "id": "protocol_1772310388932"
+  },
+  {
+    "name": "malaria",
+    "nodes": [
+      {
+        "id": 1772310866591,
+        "type": "question",
+        "text": "running nose",
+        "weight": 1,
+        "yes": 1772310880309
+      },
+      {
+        "id": 1772310880309,
+        "type": "question",
+        "text": "chest pain",
+        "weight": 1,
+        "no": 1772310890058
+      },
+      {
+        "id": 1772310890058,
+        "type": "question",
+        "text": "nose bleed",
+        "weight": 1,
+        "yes": 1772310900564
+      },
+      {
+        "id": 1772310900564,
+        "type": "result",
+        "risk": "Medium",
+        "action": "Go get a blood test"
+      }
+    ],
+    "id": "protocol_1772310914301"
+  },
+  {
+    "name": "hypertension",
+    "nodes": [
+      {
+        "id": 1772321060716,
+        "type": "question",
+        "text": "fever?",
+        "weight": 1,
+        "yes": 1772321064419
+      },
+      {
+        "id": 1772321064419,
+        "type": "question",
+        "text": "cough",
+        "weight": 1,
+        "no": 1772321071390
+      },
+      {
+        "id": 1772321071390,
+        "type": "question",
+        "text": "chest pain",
+        "weight": 1,
+        "yes": 1772321080139
+      },
+      {
+        "id": 1772321080139,
+        "type": "result",
+        "risk": "Medium",
+        "action": "get blood test"
+      }
+    ],
+    "id": "protocol_1772321104676"
+  }
+]
