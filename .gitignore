@@ -1,0 +1,40 @@
+# ─────────────────────────────────────────────
+# Node.js dependencies
+# ─────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# ─────────────────────────────────────────────
+# Environment / Secrets
+# ─────────────────────────────────────────────
+.env
+.env.local
+.env.development
+.env.production
+
+# ─────────────────────────────────────────────
+# Runtime / OS files
+# ─────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.log
+
+# ─────────────────────────────────────────────
+# Editor / IDE
+# ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ─────────────────────────────────────────────
+# Data files that grow at runtime
+# (assessments are user-generated, shouldn't
+#  be tracked in source control)
+# ─────────────────────────────────────────────
+data/assessments.json
