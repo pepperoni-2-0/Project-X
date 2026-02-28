@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#050b14">
+  <title>JEEVAN - Intelligent Triage</title>
+  <meta name="description" content="JEEVAN: Offline-first intelligent symptom triage platform for healthcare workers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- Login Screen -->
+  <div id="login-screen" class="screen active full-flex">
+    <div class="glass-card login-card fade-in-up">
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 100 100" fill="none" stroke-linecap="round" stroke-linejoin="round"
+          xmlns="http://www.w3.org/2000/svg">
+          <path d="M 40 10 L 30 10 L 30 25 L 15 25 L 15 45 L 30 45" stroke="#25a5a1" stroke-width="6" />
+          <path d="M 60 10 L 70 10 L 70 25 L 85 25 L 85 45 L 70 45" stroke="#25a5a1" stroke-width="6" />
+          <path d="M 40 90 L 30 90 L 30 75 L 15 75 L 15 55 L 30 55" stroke="#25a5a1" stroke-width="6" />
+          <path d="M 60 90 L 70 90 L 70 75 L 85 75 L 85 55 L 70 55" stroke="#25a5a1" stroke-width="6" />
+          <path d="M 50 18 L 22 28 L 22 55 C 22 75 35 88 50 98 C 65 88 78 75 78 55 L 78 28 Z" stroke="#1c4b76"
+            stroke-width="6" />
+          <circle cx="50" cy="18" r="5" fill="#1c4b76" />
+          <circle cx="22" cy="55" r="5" fill="#1c4b76" />
+          <circle cx="78" cy="55" r="5" fill="#1c4b76" />
+          <circle cx="50" cy="98" r="5" fill="#1c4b76" />
+          <path d="M 45 35 L 50 28 L 65 40 L 65 55 L 55 68 L 45 80" stroke="#72dad2" stroke-width="4" />
+          <circle cx="45" cy="35" r="4" fill="#1c4b76" />
+          <circle cx="65" cy="40" r="4" fill="#72dad2" />
+          <circle cx="55" cy="68" r="4" fill="#72dad2" />
+          <path d="M 22 55 L 35 55 L 45 45 L 50 65 L 60 45 L 65 55 L 78 55" stroke="#25a5a1" stroke-width="5" />
+        </svg>
+        <h1>JEEVAN</h1>
+      </div>
+      <p class="subtitle">Offline-First Triage Platform</p>
+
+      <form id="login-form">
+        <div class="input-group">
+          <label>Doctor / Healthcare Worker Name</label>
+          <input type="text" id="login-name" placeholder="Dr. Jane Doe" required>
+        </div>
+        <div class="input-group">
+          <label>Access PIN (Offline Auth)</label>
+          <input type="password" id="login-pin" placeholder="Enter PIN (e.g., 1234)" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Enter Platform</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app-screen" class="screen hidden">
+
+    <!-- Hamburger button (mobile only) -->
+    <button class="hamburger-btn" id="hamburger-btn" aria-label="Open navigation menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- Sidebar backdrop overlay (mobile only) -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar glass-panel">
+      <div class="sidebar-header">
+        <div class="logo small">
+          <svg class="logo-icon" viewBox="0 0 100 100" fill="none" stroke-linecap="round" stroke-linejoin="round"
+            xmlns="http://www.w3.org/2000/svg">
+            <path d="M 40 10 L 30 10 L 30 25 L 15 25 L 15 45 L 30 45" stroke="#25a5a1" stroke-width="6" />
+            <path d="M 60 10 L 70 10 L 70 25 L 85 25 L 85 45 L 70 45" stroke="#25a5a1" stroke-width="6" />
+            <path d="M 40 90 L 30 90 L 30 75 L 15 75 L 15 55 L 30 55" stroke="#25a5a1" stroke-width="6" />
+            <path d="M 60 90 L 70 90 L 70 75 L 85 75 L 85 55 L 70 55" stroke="#25a5a1" stroke-width="6" />
+            <path d="M 50 18 L 22 28 L 22 55 C 22 75 35 88 50 98 C 65 88 78 75 78 55 L 78 28 Z" stroke="#1c4b76"
+              stroke-width="6" />
+            <circle cx="50" cy="18" r="5" fill="#1c4b76" />
+            <circle cx="22" cy="55" r="5" fill="#1c4b76" />
+            <circle cx="78" cy="55" r="5" fill="#1c4b76" />
+            <circle cx="50" cy="98" r="5" fill="#1c4b76" />
+            <path d="M 45 35 L 50 28 L 65 40 L 65 55 L 55 68 L 45 80" stroke="#72dad2" stroke-width="4" />
+            <circle cx="45" cy="35" r="4" fill="#1c4b76" />
+            <circle cx="65" cy="40" r="4" fill="#72dad2" />
+            <circle cx="55" cy="68" r="4" fill="#72dad2" />
+            <path d="M 22 55 L 35 55 L 45 45 L 50 65 L 60 45 L 65 55 L 78 55" stroke="#25a5a1" stroke-width="5" />
+          </svg>
+          <h2>JEEVAN</h2>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" data-target="view-dashboard">
+          <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="12" width="4" height="9" rx="1" fill="#25a5a1" />
+              <rect x="10" y="7" width="4" height="14" rx="1" fill="#72dad2" />
+              <rect x="17" y="3" width="4" height="18" rx="1" fill="#25a5a1" />
+            </svg></span> Dashboard
+        </button>
+        <button class="nav-btn" data-target="view-conditions">
+          <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="#25a5a1" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="#25a5a1" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M8 7h8M8 11h5" stroke="#72dad2" stroke-width="2" stroke-linecap="round" />
+            </svg></span> Conditions Base
+        </button>
+        <button class="nav-btn" data-target="view-runner">
+          <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="16" r="6" stroke="#25a5a1" stroke-width="2" />
+              <path d="M12 13v6M9 16h6" stroke="#72dad2" stroke-width="2" stroke-linecap="round" />
+              <path d="M8 10C8 10 9 4 12 4s4 6 4 6" stroke="#25a5a1" stroke-width="2" stroke-linecap="round" />
+              <path d="M6 8L4 6M18 8l2-2" stroke="#72dad2" stroke-width="1.5" stroke-linecap="round" />
+            </svg></span> Run Triage
+        </button>
+        <button class="nav-btn" data-target="view-builder">
+          <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="9" width="8" height="6" rx="2" stroke="#25a5a1" stroke-width="2" />
+              <rect x="14" y="4" width="8" height="6" rx="2" stroke="#72dad2" stroke-width="2" />
+              <rect x="14" y="14" width="8" height="6" rx="2" stroke="#72dad2" stroke-width="2" />
+              <path d="M10 12h2M12 7v10" stroke="#25a5a1" stroke-width="1.5" stroke-linecap="round" />
+            </svg></span> Protocol Builder
+        </button>
+        <button class="nav-btn" data-target="view-assessments">
+          <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" stroke="#25a5a1"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M9 14h6M9 17h4" stroke="#72dad2" stroke-width="1.5" stroke-linecap="round" />
+            </svg></span> Assessments
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div id="sync-status" class="status-badge online">
+          <div class="status-dot"></div>
+          <span class="status-text">Online</span>
+        </div>
+        <div id="pending-sync-badge" class="pending-sync-badge hidden">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+            <path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 6.36 2.64L21 8" stroke="#f59e0b" stroke-width="2"
+              stroke-linecap="round" />
+            <path d="M21 3v5h-5" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M21 12a9 9 0 0 1-9 9 9 9 0 0 1-6.36-2.64L3 16" stroke="#f59e0b" stroke-width="2"
+              stroke-linecap="round" />
+            <path d="M3 21v-5h5" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span id="pending-sync-count">0</span> pending sync
+        </div>
+        <div class="user-info">
+          <div class="avatar"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="8" r="4" stroke="#25a5a1" stroke-width="2" />
+              <path d="M4 20c0-3.3 2.7-6 6-6h4c3.3 0 6 2.7 6 6" stroke="#25a5a1" stroke-width="2"
+                stroke-linecap="round" />
+            </svg></div>
+          <div class="user-details">
+            <span id="user-display-name">Doctor</span>
+            <button id="logout-btn" class="text-btn">Log out</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile bottom navigation bar -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+      <button class="mobile-nav-btn active" data-target="view-dashboard">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="12" width="4" height="9" rx="1" fill="currentColor" opacity="0.6"/>
+          <rect x="10" y="7" width="4" height="14" rx="1" fill="currentColor"/>
+          <rect x="17" y="3" width="4" height="18" rx="1" fill="currentColor" opacity="0.6"/>
+        </svg>
+        Home
+      </button>
+      <button class="mobile-nav-btn" data-target="view-conditions">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="currentColor" stroke-width="2"/>
+          <path d="M8 7h8M8 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Conditions
+      </button>
+      <button class="mobile-nav-btn" data-target="view-runner">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="16" r="6" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 13v6M9 16h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M8 10C8 10 9 4 12 4s4 6 4 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Triage
+      </button>
+      <button class="mobile-nav-btn" data-target="view-builder">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="9" width="8" height="6" rx="2" stroke="currentColor" stroke-width="2"/>
+          <rect x="14" y="4" width="8" height="6" rx="2" stroke="currentColor" stroke-width="2"/>
+          <rect x="14" y="14" width="8" height="6" rx="2" stroke="currentColor" stroke-width="2"/>
+          <path d="M10 12h2M12 7v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Builder
+      </button>
+      <button class="mobile-nav-btn" data-target="view-assessments">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2"/>
+          <path d="M9 14h6M9 17h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Records
+      </button>
+    </nav>
+
+    <!-- Content Area -->
+    <main class="main-content">
+
+      <!-- Dashboard View -->
+      <section id="view-dashboard" class="view active fade-in">
+        <header class="view-header">
+          <h1>Welcome back, <span id="dash-name" class="gradient-text">Doctor</span></h1>
+          <p>Here is the overview of your triage platform.</p>
+        </header>
+
+        <div class="stats-grid">
+          <div class="stat-card glass-panel">
+            <h3>Conditions Loaded</h3>
+            <div class="stat-value gradient-text" id="stat-conditions">0</div>
+          </div>
+          <div class="stat-card glass-panel">
+            <h3>Custom Protocols</h3>
+            <div class="stat-value gradient-text" id="stat-protocols">0</div>
+          </div>
+          <div class="stat-card glass-panel">
+            <h3>Total Assessments</h3>
+            <div class="stat-value gradient-text" id="stat-assessments">0</div>
+          </div>
+        </div>
+
+        <div class="dashboard-hero glass-panel">
+          <div class="hero-content">
+            <h2>Ready to assess a patient?</h2>
+            <p>Use the intelligent engine to map symptoms, ask dynamic follow-ups, and calculate risk scores entirely
+              offline.</p>
+            <br>
+            <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+              <button class="btn btn-primary" onclick="switchView('view-runner')">Start Symptom Triage</button>
+              <button class="btn btn-secondary" onclick="switchView('view-builder')">Build a Protocol</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Conditions Base View -->
+      <section id="view-conditions" class="view hidden fade-in">
+        <header class="view-header">
+          <h1>Conditions Base</h1>
+          <p>These are the medical conditions loaded into the backend logic.</p>
+        </header>
+        <div class="conditions-grid" id="conditions-list">
+          <div class="loader"></div>
+        </div>
+      </section>
+
+      <!-- Run Triage View -->
+      <section id="view-runner" class="view hidden fade-in">
+        <!-- Triage Mode Picker -->
+        <div id="triage-mode-picker" class="glass-panel" style="padding:2rem;margin-bottom:2rem;">
+          <h2 style="margin-bottom:0.5rem;">Choose Triage Mode</h2>
+          <p style="color:var(--text-muted);margin-bottom:1.5rem;">Select how you want to assess this patient.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+            <button class="triage-mode-card" id="mode-symptom-btn" onclick="selectTriageMode('symptom')">
+              <div class="mode-icon">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#06b6d4" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </div>
+              <h3>Symptom Triage</h3>
+              <p>Select symptoms and let the AI engine score and match conditions.</p>
+            </button>
+            <button class="triage-mode-card" id="mode-protocol-btn" onclick="selectTriageMode('protocol')">
+              <div class="mode-icon">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="9" width="8" height="6" rx="2" stroke="#8b5cf6" stroke-width="2" />
+                  <rect x="14" y="4" width="8" height="6" rx="2" stroke="#8b5cf6" stroke-width="2" />
+                  <rect x="14" y="14" width="8" height="6" rx="2" stroke="#8b5cf6" stroke-width="2" />
+                  <path d="M10 12h2M12 7v10" stroke="#8b5cf6" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+              </div>
+              <h3>Protocol-Based</h3>
+              <p>Walk through a doctor-defined flowchart step by step for guided triage.</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Symptom Triage Steps -->
+        <div id="symptom-triage-flow" class="hidden">
+          <div class="triage-container">
+            <!-- Step 1: Symptoms -->
+            <div id="triage-step-1" class="triage-step active glass-panel">
+              <h2>Step 1: Patient Symptoms</h2>
+              <p>Select all symptoms the patient is experiencing.</p>
+              <div class="symptoms-selector" id="symptoms-container">
+                <div class="loader"></div>
+              </div>
+              <div class="triage-actions">
+                <button class="btn btn-secondary" onclick="selectTriageMode(null)">← Back</button>
+                <button class="btn btn-primary" id="btn-triage-next-1" disabled>Next: Follow-up Questions</button>
+              </div>
+            </div>
+
+            <!-- Step 2: Follow-up Questions -->
+            <div id="triage-step-2" class="triage-step hidden glass-panel">
+              <h2>Step 2: Intelligent Follow-ups</h2>
+              <p>Based on symptoms, the engine suggests these questions.</p>
+              <div id="questions-container" class="questions-list"></div>
+              <div class="triage-actions">
+                <button class="btn btn-secondary" onclick="resetTriageStep(1)">Back</button>
+                <button class="btn btn-primary" id="btn-triage-run">Run Triage Engine</button>
+              </div>
+            </div>
+
+            <!-- Step 3: Results -->
+            <div id="triage-step-3" class="triage-step hidden glass-panel">
+              <h2>Triage Results</h2>
+              <div class="risk-banner" id="triage-risk-banner">
+                <span class="risk-label">RISK LEVEL</span>
+                <h1 id="triage-risk-value">Calculating...</h1>
+              </div>
+              <div class="results-layout">
+                <div class="matches-panel">
+                  <h3>Top Matched Conditions</h3>
+                  <div id="triage-matched-conditions"></div>
+                </div>
+                <div class="explanation-panel">
+                  <h3>AI Logic Explanation</h3>
+                  <ul id="triage-explanation-list"></ul>
+                  <div class="recommendation-box" id="triage-recommendation"></div>
+                </div>
+              </div>
+              <div class="triage-actions mt-4">
+                <button class="btn btn-secondary" onclick="resetTriage()">Start New Patient</button>
+                <button class="btn btn-primary" id="btn-save-assessment">Save Assessment</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Protocol Triage Flow -->
+        <div id="protocol-triage-flow" class="hidden">
+          <!-- Step A: Pick a protocol -->
+          <div id="protocol-pick-step" class="glass-panel" style="padding:2rem;">
+            <h2 style="margin-bottom:0.5rem;">Select a Protocol</h2>
+            <p style="color:var(--text-muted);margin-bottom:1.5rem;">Choose a doctor-defined flowchart to run the
+              triage.</p>
+            <div id="protocol-pick-list"
+              style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;">
+              <div class="loader"></div>
+            </div>
+            <div style="margin-top:1.5rem;">
+              <button class="btn btn-secondary" onclick="selectTriageMode(null)">← Back</button>
+            </div>
+          </div>
+
+          <!-- Step B: Node-by-node Q&A -->
+          <div id="protocol-qa-step" class="hidden glass-panel" style="padding:2.5rem;max-width:700px;margin:0 auto;">
+            <div class="protocol-qa-header">
+              <span class="protocol-breadcrumb" id="proto-name-label">Protocol</span>
+              <div class="proto-progress-bar">
+                <div class="proto-progress-fill" id="proto-progress-fill"></div>
+              </div>
+            </div>
+            <div class="proto-question-card">
+              <div class="proto-question-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#06b6d4"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+              <h2 id="proto-question-text" style="margin:0;font-size:1.5rem;">Loading...</h2>
+            </div>
+            <div style="display:flex;gap:1rem;margin-top:2rem;">
+              <button class="btn btn-proto-yes" id="proto-yes-btn" onclick="answerProto('yes')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                Yes
+              </button>
+              <button class="btn btn-proto-no" id="proto-no-btn" onclick="answerProto('no')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                </svg>
+                No
+              </button>
+            </div>
+            <div style="margin-top:1.5rem;">
+              <button class="btn btn-secondary btn-sm" onclick="restartProtoRun()">← Restart Protocol</button>
+            </div>
+          </div>
+
+          <!-- Step C: Protocol Result -->
+          <div id="protocol-result-step" class="hidden glass-panel"
+            style="padding:2.5rem;max-width:700px;margin:0 auto;text-align:center;">
+            <div class="proto-result-icon" id="proto-result-icon">
+              <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="#10b981" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <polyline points="22 4 12 14.01 9 11.01" stroke="#10b981" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </div>
+            <span class="proto-result-label">PROTOCOL RESULT</span>
+            <h2 class="proto-result-protocol" id="proto-result-protocol-name">Protocol Name</h2>
+            <div class="proto-risk-chip" id="proto-risk-chip">Unknown</div>
+            <div class="proto-result-action" id="proto-result-action">Action will appear here.</div>
+            <div style="display:flex;gap:1rem;justify-content:center;margin-top:2rem;flex-wrap:wrap;">
+              <button class="btn btn-secondary" onclick="restartProtoRun()">Run Again</button>
+              <button class="btn btn-secondary" onclick="selectTriageMode(null)">Choose Different Mode</button>
+              <button class="btn btn-primary" id="btn-save-proto-assessment">Save to Records</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Protocol Builder View -->
+      <section id="view-builder" class="view hidden fade-in">
+        <header class="view-header">
+          <h1>Triage Flowchart Builder</h1>
+          <p>Design branching triage protocols. Connect Question nodes with Yes/No paths leading to Result nodes.</p>
+        </header>
+
+        <div class="builder-layout">
+          <!-- Toolkit (Draggable Items) -->
+          <div class="toolkit glass-panel">
+            <h3>Node Toolkit</h3>
+            <div class="toolkit-items">
+              <div class="draggable-item" draggable="true" data-type="question" id="drag-question">
+                <div class="drag-handle">⠿</div>
+                <div class="item-content">
+                  <h4>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      style="vertical-align:middle;margin-right:4px">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="#06b6d4"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Question Node
+                  </h4>
+                  <p>Ask a yes/no question. Branch to different nodes.</p>
+                </div>
+              </div>
+              <div class="draggable-item action" draggable="true" data-type="result" id="drag-result">
+                <div class="drag-handle">⠿</div>
+                <div class="item-content">
+                  <h4>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      style="vertical-align:middle;margin-right:4px">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                        stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Result Node
+                  </h4>
+                  <p>Define a terminal outcome with risk level & action.</p>
+                </div>
+              </div>
+            </div>
+
+            <hr class="divider">
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+              <h3>Saved Protocols</h3>
+            </div>
+            <div id="builder-protocols-list" class="mini-list">
+              <div class="loader-small"></div>
+            </div>
+          </div>
+
+          <!-- Builder Canvas -->
+          <div class="canvas-container glass-panel">
+            <div class="canvas-header">
+              <input type="text" id="builder-protocol-name" placeholder="Enter Protocol Name..."
+                class="transparent-input h2-input">
+              <div style="display:flex;gap:0.75rem;align-items:center;">
+                <button class="btn btn-secondary btn-sm" id="btn-clear-canvas">Clear</button>
+                <button class="btn btn-primary btn-sm" id="btn-save-protocol">Save Protocol</button>
+              </div>
+            </div>
+
+            <!-- Connection hint bar -->
+            <div class="connection-hint" id="connection-hint">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="#06b6d4" stroke-width="2" />
+                <path d="M12 8v4l3 3" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" />
+              </svg>
+              <span id="hint-text">Drag nodes from the toolkit to the canvas. Click a node's Yes/No port to connect it
+                to another node.</span>
+            </div>
+
+            <div class="flowchart-canvas" id="flowchart-canvas">
+              <svg class="connections-svg" id="connections-svg"
+                style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;"></svg>
+              <div class="empty-drop-state" id="empty-drop-state">
+                <div class="icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <rect x="2" y="9" width="8" height="6" rx="2" stroke="#25a5a1" stroke-width="1.5" />
+                    <rect x="14" y="4" width="8" height="6" rx="2" stroke="#72dad2" stroke-width="1.5" />
+                    <rect x="14" y="14" width="8" height="6" rx="2" stroke="#72dad2" stroke-width="1.5" />
+                    <path d="M10 12h2M12 7v10" stroke="#25a5a1" stroke-width="1.5" stroke-linecap="round" />
+                  </svg>
+                </div>
+                <p>Drag Question &amp; Result nodes here to build your flowchart</p>
+                <p style="font-size:0.8rem;margin-top:0.5rem;color:var(--text-muted)">Connect nodes using the Yes / No
+                  ports on each question card</p>
+              </div>
+              <div id="flowchart-nodes"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Assessments View -->
+      <section id="view-assessments" class="view hidden fade-in">
+        <header class="view-header">
+          <h1>Assessment History</h1>
+          <p>Past triage runs saved in the local database.</p>
+        </header>
+        <div class="glass-panel">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID / Date</th>
+                <th>Mode / Symptoms</th>
+                <th>Calculated Risk</th>
+                <th>Top Condition / Action</th>
+              </tr>
+            </thead>
+            <tbody id="assessments-table-body">
+              <tr>
+                <td colspan="4" class="text-center">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="toast" class="toast">Message</div>
+
+  <!-- Patient Details Modal -->
+  <div id="patient-modal-overlay" class="modal-overlay hidden">
+    <div class="modal-card glass-panel fade-in-up">
+      <div class="modal-header">
+        <div class="modal-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4" stroke="#06b6d4" stroke-width="2" />
+            <path d="M4 20c0-3.3 2.7-6 6-6h4c3.3 0 6 2.7 6 6" stroke="#06b6d4" stroke-width="2"
+              stroke-linecap="round" />
+          </svg>
+        </div>
+        <div>
+          <h3>Patient Details</h3>
+          <p>Enter patient info before saving this assessment.</p>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="input-group">
+          <label for="patient-name-input">Patient Name</label>
+          <input type="text" id="patient-name-input" placeholder="e.g. John Doe" autocomplete="off">
+        </div>
+        <div class="input-group" style="margin-bottom:0;">
+          <label for="patient-date-input">Assessment Date</label>
+          <input type="date" id="patient-date-input">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+        <button class="btn btn-primary" id="modal-confirm-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-right:6px">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <polyline points="17 21 17 13 7 13 7 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <polyline points="7 3 7 8 15 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          Save Assessment
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
