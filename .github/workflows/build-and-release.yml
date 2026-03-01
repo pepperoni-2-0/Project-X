@@ -58,11 +58,20 @@ jobs:
             ### How to use:
             1. Download the file appropriate for your Operating System:
                - **Windows**: `jeevan-windows-x64.exe`
-               - **macOS (Intel)**: `jeevan-macos-x64`
                - **macOS (Apple Silicon/M1/M2)**: `jeevan-macos-arm64`
+               - **macOS (Intel)**: `jeevan-macos-x64`
                - **Linux**: `jeevan-linux-x64`
             2. Place the executable in a folder of your choice.
-            3. Double-click to run! (Note: On macOS, you may need to right-click -> Open to bypass the unknown developer warning).
+            3. Double-click to run! 
+            
+            **⚠️ macOS Users ("Cannot be opened because the developer cannot be verified"):**
+            Because this is an indie executable without an Apple Developer certificate, macOS will block it by default. 
+            To run it:
+            1. Locate the file in Finder.
+            2. **Right-click** (or Control-click) the file, and click **Open**. 
+            3. A new popup will appear with an **"Open"** button. Click it.
+            
+            *(Alternatively, run `xattr -d com.apple.quarantine <filename>` in your terminal).*
             
             The application will automatically launch your browser and navigate to the local server, persisting data automatically to a `jeevan-data/` folder created securely next to it.
         env:
