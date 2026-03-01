@@ -101,7 +101,9 @@ jobs:
             2. **Right-click** (or Control-click) the file, and click **Open**. 
             3. A new popup will appear with an **"Open"** button. Click it.
             
-            *(Alternatively, run `xattr -d com.apple.quarantine <filename>` in your terminal).*
+            *(Alternatively, if macOS still blocks the `.app` bundle, run this command in your terminal:)*
+            `xattr -cr /path/to/extracted/JEEVAN.app`
+            *(For the Intel binary, run: `xattr -d com.apple.quarantine /path/to/jeevan-macos-x64`)*
             
             The application will automatically launch your browser and navigate to the local server, persisting data automatically to a `jeevan-data/` folder created securely next to it.
         env:
