@@ -325,7 +325,7 @@ End
 
 ## 12. Demo & Video
 
-- **Live Demo Link**: https://jeevan-kvmr.onrender.com
+- **Live Demo Link**: TBD
 - **Demo Video Link**: TBD
 - **GitHub Repository**: https://github.com/pepperoni-2-0/JEEVAN
 
