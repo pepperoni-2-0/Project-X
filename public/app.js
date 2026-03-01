@@ -619,19 +619,59 @@ el.btnRun.addEventListener('click', async () => {
 
 function showTriageResult(res) {
     resetTriageStep(3);
-    document.getElementById('triage-risk-value').textContent = res.riskLevel;
-    document.getElementById('triage-risk-banner').style.background = `rgba(var(--risk-${res.riskLevel.toLowerCase()}-rgb), 0.15)`;
-    document.getElementById('triage-risk-value').style.color = `var(--risk-${res.riskLevel.toLowerCase()})`;
-    document.getElementById('triage-matched-conditions').innerHTML = res.conditions.map(c => `
-    <div class="matched-item">
-      <div style="flex:1"><span style="font-weight:600">${c.name}</span>
-        <div class="score-bar"><div class="score-fill" style="width:${c.score}%"></div></div>
-      </div>
-      <div style="margin-left:1rem;color:var(--accent-cyan);font-weight:600">${c.score}% Match</div>
-    </div>
-  `).join('');
-    document.getElementById('triage-explanation-list').innerHTML = res.explanation.map(e => `<li>${e}</li>`).join('');
-    document.getElementById('triage-recommendation').textContent = res.recommendations;
+
+    // Header setup
+    document.getElementById('triage-risk-value').textContent = res.riskLevel.toUpperCase() + ' ALERT';
+    document.getElementById('triage-tr-header').style.background = `var(--risk-${res.riskLevel.toLowerCase()})`;
+    document.getElementById('triage-assessment-id').textContent = 'REF-' + Date.now().toString().slice(-6);
+
+    // Render conditions with progress bars
+    document.getElementById('triage-matched-conditions').innerHTML = res.conditions.map((c, i) => {
+        const isLow = c.score < 40;
+        return `
+        <div class="tr-score-row ${isLow ? 'low-match' : ''}">
+            <div class="tr-score-header">
+                <div>
+                    <div class="tr-score-name">${c.name}</div>
+                    <div class="tr-score-sub">${i === 0 ? 'Primary Diagnostic Indication' : (isLow ? 'Low risk statistical match' : 'Differential diagnosis match')}</div>
+                </div>
+                <div class="tr-score-val">${c.score}%</div>
+            </div>
+            <div class="tr-progress-bg">
+                <div class="tr-progress-fill" style="width: ${c.score}%"></div>
+            </div>
+        </div>
+        `;
+    }).join('');
+
+    // Input profile tags
+    const symArray = Array.from(state.selectedSymptoms);
+    document.getElementById('triage-input-tags').innerHTML = symArray.map(s =>
+        `<span class="tr-tag">${s.replace(/_/g, ' ')}</span>`
+    ).join('');
+
+    // Explanation logical list
+    document.getElementById('triage-explanation-list').innerHTML = res.explanation.map(e => `
+        <div class="tr-reason-item">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="tr-reason-icon">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="tr-reason-text">${e}</div>
+        </div>
+    `).join('');
+
+    // Recommendation block
+    document.getElementById('triage-recommendation-container').innerHTML = `
+        <div class="tr-action-box">
+            <div class="tr-action-text">${res.recommendations}</div>
+        </div>
+        <div class="tr-mandate">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="tr-mandate-icon">
+                <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#991B1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="tr-mandate-text">Follow standard clinic protocol for highlighted symptoms.</div>
+        </div>
+    `;
 }
 
 document.getElementById('btn-save-assessment').addEventListener('click', async () => {
