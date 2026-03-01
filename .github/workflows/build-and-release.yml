@@ -1,0 +1,69 @@
+name: Build and Release JEEVAN Executables
+
+on:
+  push:
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm ci || npm install
+
+      - name: Build Executables with pkg
+        run: npm run build
+
+      - name: Rename Files for Release
+        working-directory: ./dist
+        run: |
+          mv jeevan-backend-linux-x64 jeevan-linux-x64
+          mv jeevan-backend-macos-arm64 jeevan-macos-arm64
+          mv jeevan-backend-macos-x64 jeevan-macos-x64
+          mv jeevan-backend-win-x64.exe jeevan-windows-x64.exe
+          
+          # Optional: Create a zip folder containing initial data folders so people have the default seeds
+          mkdir -p jeevan-data
+          cp ../data/*.json jeevan-data/ || true
+          zip -r jeevan-data.zip jeevan-data
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/jeevan-linux-x64
+            dist/jeevan-macos-arm64
+            dist/jeevan-macos-x64
+            dist/jeevan-windows-x64.exe
+            dist/jeevan-data.zip
+          name: Release ${{ github.ref_name }}
+          body: |
+            # JEEVAN Application - Standalone Offline Executables
+            
+            This release contains the fully-offline standalone executable versions of the JEEVAN application.
+            
+            ### How to use:
+            1. Download the file appropriate for your Operating System:
+               - **Windows**: `jeevan-windows-x64.exe`
+               - **macOS (Intel)**: `jeevan-macos-x64`
+               - **macOS (Apple Silicon/M1/M2)**: `jeevan-macos-arm64`
+               - **Linux**: `jeevan-linux-x64`
+            2. Place the executable in a folder of your choice.
+            3. Double-click to run! (Note: On macOS, you may need to right-click -> Open to bypass the unknown developer warning).
+            
+            The application will automatically launch your browser and navigate to the local server, persisting data automatically to a `jeevan-data/` folder created securely next to it.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
