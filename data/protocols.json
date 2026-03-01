@@ -97,5 +97,38 @@
       }
     ],
     "id": "protocol_1772321104676"
+  },
+  {
+    "name": "typhoid",
+    "nodes": [
+      {
+        "id": 1772338240918,
+        "type": "question",
+        "text": "have fever?",
+        "weight": 1,
+        "yes": 1772338249068
+      },
+      {
+        "id": 1772338249068,
+        "type": "question",
+        "text": "have chest pain",
+        "weight": 1,
+        "no": 1772338264326
+      },
+      {
+        "id": 1772338264326,
+        "type": "question",
+        "text": "have blocked nose?",
+        "weight": 1,
+        "yes": 1772338280451
+      },
+      {
+        "id": 1772338280451,
+        "type": "result",
+        "risk": "Medium",
+        "action": "get a checkup"
+      }
+    ],
+    "id": "protocol_1772338302845"
   }
 ]

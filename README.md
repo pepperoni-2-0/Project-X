@@ -325,8 +325,8 @@ End
 
 ## 12. Demo & Video
 
-- **Live Demo Link**: TBD
-- **Demo Video Link**: TBD
+- **Live Demo Link**: https://jeevan-kvmr.onrender.com/
+- **Demo Video Link**: https://drive.google.com/drive/folders/1B5hLsCS2NP2LuDI1W6vobuBWjC_SPJM1
 - **GitHub Repository**: https://github.com/pepperoni-2-0/JEEVAN
 
 ## 13. Hackathon Deliverables Summary
