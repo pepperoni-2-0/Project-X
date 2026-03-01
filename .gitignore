@@ -38,3 +38,6 @@ Thumbs.db
 #  be tracked in source control)
 # ─────────────────────────────────────────────
 data/assessments.json
+
+dist/
+jeevan-data/

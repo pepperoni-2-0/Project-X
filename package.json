@@ -1,18 +1,33 @@
 {
-  "name": "backend",
+  "name": "jeevan-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Offline-First Intelligent Triage Platform",
+  "main": "server.js",
+  "bin": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "pkg . --out-path dist"
   },
   "keywords": [],
-  "author": "",
+  "author": "Hackathon Team",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  },
+  "pkg": {
+    "assets": [
+      "public/**/*",
+      "data/**/*"
+    ],
+    "targets": [
+      "node18-win-x64",
+      "node18-macos-x64",
+      "node18-macos-arm64",
+      "node18-linux-x64"
+    ]
   }
 }
