@@ -7,6 +7,10 @@ const LS = {
     USER: 'jeevan_user',
     ASSESSMENTS: 'jeevan_all_assessments',   // every assessment (source of truth)
     PENDING: 'jeevan_pending_sync',           // IDs of assessments not yet synced to server
+    // API response cache — so every view works offline after first load
+    CACHE_CONDITIONS: 'jeevan_cache_conditions',
+    CACHE_SYMPTOMS: 'jeevan_cache_symptoms',
+    CACHE_PROTOCOLS: 'jeevan_cache_protocols',
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -327,12 +331,34 @@ function loginSuccess() {
 // ─────────────────────────────────────────────────────────────────────────────
 // API HELPERS  (used for read-only server calls; saves go through offline layer)
 // ─────────────────────────────────────────────────────────────────────────────
+
+// Map endpoints to their localStorage cache keys
+const API_CACHE_MAP = {
+    '/conditions': LS.CACHE_CONDITIONS,
+    '/symptoms': LS.CACHE_SYMPTOMS,
+    '/protocols': LS.CACHE_PROTOCOLS,
+};
+
 async function apiGet(endpoint) {
+    const cacheKey = API_CACHE_MAP[endpoint]; // e.g. 'jeevan_cache_conditions'
     try {
         const res = await fetch(`${API_BASE}${endpoint}`, { signal: AbortSignal.timeout(5000) });
         if (!res.ok) throw new Error('Network error');
-        return await res.json();
-    } catch { return null; }
+        const data = await res.json();
+        // ✅ Save to localStorage so it's available offline next time
+        if (cacheKey) localStorage.setItem(cacheKey, JSON.stringify(data));
+        return data;
+    } catch {
+        // 📦 Offline or server error — serve from localStorage cache
+        if (cacheKey) {
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                console.log(`[Offline] Serving ${endpoint} from localStorage cache.`);
+                return JSON.parse(cached);
+            }
+        }
+        return null;
+    }
 }
 
 async function apiPost(endpoint, data) {
