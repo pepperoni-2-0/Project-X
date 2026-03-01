@@ -8,7 +8,7 @@
 // 4. If completely offline → serve from cache (app works fully offline)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const CACHE_NAME = 'jeevan-v1';
+const CACHE_NAME = 'jeevan-v2';
 
 // All static assets to pre-cache on install
 const STATIC_ASSETS = [
