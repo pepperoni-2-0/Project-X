@@ -381,6 +381,79 @@ async function apiDelete(endpoint) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// LOCAL TRIAGE ENGINE — exact mirror of backend logic, runs in browser
+// Used automatically as fallback when server is offline
+// Reads from localStorage cache (populated on first online visit)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Mirror of scoringEngine.js — finds highest risk from matched conditions */
+function _localRiskLevel(conditions) {
+    const priority = { Critical: 4, High: 3, Medium: 2, Low: 1 };
+    return conditions.reduce(
+        (max, c) => (priority[c.risk] || 0) > (priority[max] || 0) ? c.risk : max,
+        'Low'
+    );
+}
+
+/** Mirror of followupEngine.js — collects unique follow-up questions from cached conditions */
+function localFollowupQuestions(symptoms) {
+    const conditions = JSON.parse(localStorage.getItem(LS.CACHE_CONDITIONS) || '[]');
+    const qSet = new Set();
+    for (const cond of conditions) {
+        const hasMatch = symptoms.some(s => cond.symptoms.includes(s));
+        if (hasMatch && cond.questions) cond.questions.forEach(q => qSet.add(q));
+    }
+    return { questions: Array.from(qSet) };
+}
+
+/** Mirror of triageEngine.js — scores all conditions against selected symptoms */
+function localRunTriage(symptoms, answers = {}) {
+    const conditions = JSON.parse(localStorage.getItem(LS.CACHE_CONDITIONS) || '[]');
+    if (!conditions.length) return null;
+
+    const scored = conditions.map(cond => {
+        let matchedCount = 0, scoreBonus = 0;
+        const explanations = [];
+        for (const sym of symptoms) {
+            if (cond.symptoms.includes(sym)) {
+                matchedCount++;
+                explanations.push(`${sym} matched`);
+                if (cond.weights && cond.weights[sym] > 2) {
+                    scoreBonus += cond.weights[sym];
+                    explanations.push(`${sym} increases risk`);
+                }
+            }
+        }
+        const baseScore = cond.symptoms.length > 0
+            ? (matchedCount / cond.symptoms.length) * 100 : 0;
+        return {
+            name: cond.name,
+            score: Math.min(Math.round(baseScore + scoreBonus), 100),
+            risk: cond.risk,
+            action: cond.action,
+            explanation: explanations
+        };
+    }).filter(c => c.score > 0).sort((a, b) => b.score - a.score).slice(0, 3);
+
+    if (!scored.length) return {
+        conditions: [], riskLevel: 'Low',
+        recommendations: 'No concerning conditions matched. Please rest and monitor.',
+        explanation: ['No specific conditions matched the provided symptoms.']
+    };
+
+    const riskLevel = _localRiskLevel(scored);
+    const explanation = [];
+    scored.forEach(c => c.explanation.forEach(e => { if (!explanation.includes(e)) explanation.push(e); }));
+
+    return {
+        conditions: scored.map(c => ({ name: c.name, score: c.score })),
+        riskLevel,
+        recommendations: scored[0].action,
+        explanation
+    };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // DASHBOARD — reads from local storage so it works offline
 // ─────────────────────────────────────────────────────────────────────────────
 async function loadDashboard() {
@@ -505,7 +578,8 @@ async function loadTriageData() {
 el.btnNext1.addEventListener('click', async () => {
     const symArray = Array.from(state.selectedSymptoms);
     el.btnNext1.textContent = "Loading...";
-    const res = await apiPost('/triage/questions', { symptoms: symArray });
+    const res = await apiPost('/triage/questions', { symptoms: symArray })
+        || localFollowupQuestions(symArray); // ⭐ offline fallback
     el.btnNext1.textContent = "Next: Follow-up Questions";
     state.answers = {};
     if (res && res.questions && res.questions.length > 0) {
@@ -537,7 +611,8 @@ window.resetTriageStep = (step) => {
 el.btnRun.addEventListener('click', async () => {
     el.btnRun.textContent = "Analyzing...";
     const symArray = Array.from(state.selectedSymptoms);
-    const res = await apiPost('/triage/run', { symptoms: symArray, answers: state.answers });
+    const res = await apiPost('/triage/run', { symptoms: symArray, answers: state.answers })
+        || localRunTriage(symArray, state.answers); // ⭐ offline fallback
     el.btnRun.textContent = "Run Triage Engine";
     if (res) { state.triageResult = res; showTriageResult(res); }
 });
