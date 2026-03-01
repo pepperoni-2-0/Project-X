@@ -94,16 +94,20 @@ jobs:
             2. Place the executable in a folder of your choice.
             3. Double-click to run! 
             
-            **⚠️ macOS Users ("Cannot be opened because the developer cannot be verified"):**
-            Because this is an indie executable without an Apple Developer certificate, macOS will block it by default. 
-            To run it:
-            1. Locate the file in Finder.
-            2. **Right-click** (or Control-click) the file, and click **Open**. 
-            3. A new popup will appear with an **"Open"** button. Click it.
+            **⚠️ macOS Users ("Cannot be opened because the developer cannot be verified" or app instantly closes):**
+            Because this is an indie executable without an Apple Developer certificate, macOS Gatekeeper and ARM Sandbox will block it by default.
             
-            *(Alternatively, if macOS still blocks the `.app` bundle, run this command in your terminal:)*
-            `xattr -cr /path/to/extracted/JEEVAN.app`
-            *(For the Intel binary, run: `xattr -d com.apple.quarantine /path/to/jeevan-macos-x64`)*
+            **Steps to run on Mac:**
+            1. First, try right-clicking (or Control-click) the extracted `JEEVAN.app` file and click **Open**. Click **"Open"** again in the popup dialog.
+            2. If the app still refuses to open or instantly crashes (especially on M1/M2/M3), you must run these two commands in your Mac's **Terminal**:
+            
+            ```bash
+            xattr -cr /path/to/your/extracted/JEEVAN.app
+            codesign --force --deep --sign - /path/to/your/extracted/JEEVAN.app
+            ```
+            *(Important: Replace `/path/to/your/extracted/JEEVAN.app` with the actual path on your computer. For example, if it's in your Downloads folder, you would use `~/Downloads/JEEVAN.app`)*
+            
+            *(For Intel Mac users using the loose binary: run `xattr -d com.apple.quarantine /path/to/jeevan-macos-x64`)*
             
             The application will automatically launch your browser and navigate to the local server, persisting data automatically to a `jeevan-data/` folder created securely next to it.
         env:
