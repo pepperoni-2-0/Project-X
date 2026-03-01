@@ -31,9 +31,39 @@ jobs:
         working-directory: ./dist
         run: |
           mv jeevan-backend-linux-x64 jeevan-linux-x64
-          mv jeevan-backend-macos-arm64 jeevan-macos-arm64
           mv jeevan-backend-macos-x64 jeevan-macos-x64
           mv jeevan-backend-win-x64.exe jeevan-windows-x64.exe
+          
+          # Fix macOS "Text Document" Bug for ARM64 by building a proper .app bundle
+          mkdir -p JEEVAN.app/Contents/MacOS
+          mv jeevan-backend-macos-arm64 JEEVAN.app/Contents/MacOS/JEEVAN
+          chmod +x JEEVAN.app/Contents/MacOS/JEEVAN
+          
+          # Create Info.plist to register as an App
+          cat << 'EOF' > JEEVAN.app/Contents/Info.plist
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>CFBundleExecutable</key>
+              <string>JEEVAN</string>
+              <key>CFBundleIdentifier</key>
+              <string>com.jeevan.triage</string>
+              <key>CFBundleName</key>
+              <string>JEEVAN</string>
+              <key>CFBundlePackageType</key>
+              <string>APPL</string>
+              <key>CFBundleShortVersionString</key>
+              <string>1.0.0</string>
+              <key>LSRequiresCarbon</key>
+              <true/>
+              <key>NSHighResolutionCapable</key>
+              <true/>
+          </dict>
+          </plist>
+          EOF
+          
+          zip -r JEEVAN-macOS-silicon.zip JEEVAN.app
           
           # Optional: Create a zip folder containing initial data folders so people have the default seeds
           mkdir -p jeevan-data
@@ -45,7 +75,7 @@ jobs:
         with:
           files: |
             dist/jeevan-linux-x64
-            dist/jeevan-macos-arm64
+            dist/JEEVAN-macOS-silicon.zip
             dist/jeevan-macos-x64
             dist/jeevan-windows-x64.exe
             dist/jeevan-data.zip
@@ -58,7 +88,7 @@ jobs:
             ### How to use:
             1. Download the file appropriate for your Operating System:
                - **Windows**: `jeevan-windows-x64.exe`
-               - **macOS (Apple Silicon/M1/M2)**: `jeevan-macos-arm64`
+               - **macOS (Apple Silicon/M1/M2/M3)**: `JEEVAN-macOS-silicon.zip` (Extract it, double-click the .app)
                - **macOS (Intel)**: `jeevan-macos-x64`
                - **Linux**: `jeevan-linux-x64`
             2. Place the executable in a folder of your choice.
