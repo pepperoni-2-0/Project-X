@@ -145,14 +145,14 @@ Healthcare workers use these protocols for guided triage.
      - Flu (70%)
      ```
 
-4. **Follow-Up Question Suggestions**
-   - The system suggests relevant follow‑up questions.
+4. **Intelligent Follow-Up Questions**
+   - The system checks which symptoms were selected and suggests contextually aware follow-up questions to further narrow the differential diagnosis.
    - Example:
-     ```
+     ```text
      Follow-up Questions:
-     • How long has the fever lasted?
-     • Any breathing difficulty?
-     • Chest pain?
+     • Is your fever consistently higher than 101°F (38.3°C)?
+     • Is your cough producing any yellow, green, or blood-tinged mucus?
+     • Are you finding it hard to speak in full sentences due to shortness of breath?
      ```
 
 5. **Risk Scoring System**
@@ -224,15 +224,12 @@ Doctor → Protocol Builder → Protocol Database
 Nurse → Triage Engine → Decision Output
 ```
 
-## 5. Database Design
-- **User**: UserID, Role, Name
-- **Protocol**: ProtocolID, ProtocolName, CreatedDate
-- **Node**: NodeID, ProtocolID, NodeType, QuestionText, RiskWeight
-- **Condition**: ConditionID, ConditionName
-- **Symptom**: SymptomID, SymptomName
-- **Assessment**: AssessmentID, Date, ProtocolID
-- **Response**: AssessmentID, NodeID, Answer
-- **Result**: AssessmentID, RiskLevel, Score
+## 5. Database Schema (NoSQL JSON)
+
+The platform relies on a flat-file NoSQL JSON architecture to guarantee offline performance without requiring dedicated database processes:
+- **`conditions.json`**: Clinical conditions containing an array of matched `symptoms`, follow-up `questions`, diagnostic `weights`, `risk` levels, and `action` recommendations.
+- **`protocols.json`**: Doctor-designed decision trees, containing an array of `nodes` (questions and results) linked together via unique IDs.
+- **`assessments.json`**: Patient history logs tracking `patientName`, `symptoms` reported, `answers` to follow-up questions, the final `result` object, and the `savedBy` healthcare worker tag.
 
 ## 6. Dataset Selected
 
@@ -264,17 +261,17 @@ Nurse → Triage Engine → Decision Output
 
 ## 8. Technology Stack
 
-- **Frontend**: HTML, CSS, JavaScript
-- **Backend**: Node.js
-- **ML/AI**: Rule-based engine
-- **Database**: Local JSON database, MongoDB (online mode)
-- **Deployment**: Offline-first web application, hybrid online/offline
+- **Frontend**: HTML, Vanilla CSS, Vanilla JavaScript (No Frameworks)
+- **Backend**: Node.js, Express.js
+- **Triage Logic**: Custom Rule-based scoring engine
+- **Database**: Local JSON file storage (Backend server) and `localStorage` (Offline web client)
+- **Deployment**: Offline-first hybrid application packaged with `pkg` for standalone execution without Node.js installed.
 
 ## 9. API Documentation & Testing
 
-- **Endpoint 1**: `POST /saveProtocol`
-- **Endpoint 2**: `GET /loadProtocol`
-- **Endpoint 3**: `POST /runAssessment`
+- **Data Endpoints**: `GET /api/conditions`, `GET /api/symptoms`, `GET /api/protocols`
+- **Triage Endpoints**: `POST /api/triage/questions`, `POST /api/triage/run`
+- **Sync Endpoints**: `POST /api/sync/push`
 ## 10. Module-wise Development & Deliverables
 
 1. **Checkpoint 1: Research & Planning**
@@ -282,10 +279,10 @@ Nurse → Triage Engine → Decision Output
 2. **Checkpoint 2: Backend Development**
    - Deliverables: Protocol storage, decision engine, risk scoring
 3. **Checkpoint 3: Frontend Development**
-   - Deliverables: Protocol builder, assessment interface
-4. **Checkpoint 4: Model Training**
-   - Deliverables: Rule definition, symptom mapping
-5. **Checkpoint 5: Model Integration**
+   - Deliverables: Protocol builder, assessment interface, PWA Service Worker for offline support
+4. **Checkpoint 4: Logic & Database Implementation**
+   - Deliverables: Rule definitions, symptom mapping, JSON flat-file storage
+5. **Checkpoint 5: Engine Integration**
    - Deliverables: Integrated triage engine
 6. **Checkpoint 6: Deployment**
    - Deliverables: Offline hybrid application
