@@ -19,7 +19,31 @@ async function getFollowupQuestions(symptoms) {
         const hasMatch = symptoms.some(sym => condition.symptoms.includes(sym));
 
         if (hasMatch && condition.questions) {
-            condition.questions.forEach(q => questionSet.add(q));
+            condition.questions.forEach(q => {
+                if (typeof q === 'string') {
+                    // Try to avoid asking about symptoms explicitly mentioned
+                    const lowerQ = q.toLowerCase();
+                    if (lowerQ.includes('fever') && symptoms.includes('Fever')) return;
+                    if (lowerQ.includes('cough') && symptoms.includes('Cough')) return;
+                    questionSet.add(q);
+                } else if (typeof q === 'object') {
+                    if (q.linked_symptom) {
+                        // Intelligent dynamic logic
+                        const symptomPresent = symptoms.includes(q.linked_symptom);
+                        if (q.ask_if === 'present' && symptomPresent) {
+                            questionSet.add(q.text);
+                        } else if (q.ask_if === 'absent' && !symptomPresent) {
+                            questionSet.add(q.text);
+                        }
+                    } else if (q.text) {
+                        // Fallback filter
+                        const lowerQ = q.text.toLowerCase();
+                        if (lowerQ.includes('fever') && symptoms.includes('Fever')) return;
+                        if (lowerQ.includes('cough') && symptoms.includes('Cough')) return;
+                        questionSet.add(q.text);
+                    }
+                }
+            });
         }
     }
 

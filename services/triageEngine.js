@@ -45,6 +45,22 @@ async function runTriage(symptoms, answers = {}) {
             }
         }
 
+        // Use user answers to follow-up questions to increase accuracy
+        if (answers && Object.keys(answers).length > 0) {
+            Object.keys(answers).forEach((questionText) => {
+                const isRelevant = condition.questions && condition.questions.some(q =>
+                    (typeof q === 'string' && q === questionText) ||
+                    (typeof q === 'object' && q.text === questionText)
+                );
+
+                // If they answered Yes to a follow-up relevant to this condition, boost its score
+                if (isRelevant && answers[questionText] === 'Yes') {
+                    scoreBonus += 15;
+                    explanations.push(`Positive response to diagnostic follow-up`);
+                }
+            });
+        }
+
         // Calculate initial percentage score based on symptom matches
         let baseScore = 0;
         if (condition.symptoms.length > 0) {

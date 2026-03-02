@@ -395,13 +395,35 @@ function _localRiskLevel(conditions) {
     );
 }
 
-/** Mirror of followupEngine.js — collects unique follow-up questions from cached conditions */
 function localFollowupQuestions(symptoms) {
     const conditions = JSON.parse(localStorage.getItem(LS.CACHE_CONDITIONS) || '[]');
     const qSet = new Set();
     for (const cond of conditions) {
         const hasMatch = symptoms.some(s => cond.symptoms.includes(s));
-        if (hasMatch && cond.questions) cond.questions.forEach(q => qSet.add(q));
+        if (hasMatch && cond.questions) {
+            cond.questions.forEach(q => {
+                if (typeof q === 'string') {
+                    const lowerQ = q.toLowerCase();
+                    if (lowerQ.includes('fever') && symptoms.includes('Fever')) return;
+                    if (lowerQ.includes('cough') && symptoms.includes('Cough')) return;
+                    qSet.add(q);
+                } else if (typeof q === 'object') {
+                    if (q.linked_symptom) {
+                        const symptomPresent = symptoms.includes(q.linked_symptom);
+                        if (q.ask_if === 'present' && symptomPresent) {
+                            qSet.add(q.text);
+                        } else if (q.ask_if === 'absent' && !symptomPresent) {
+                            qSet.add(q.text);
+                        }
+                    } else if (q.text) {
+                        const lowerQ = q.text.toLowerCase();
+                        if (lowerQ.includes('fever') && symptoms.includes('Fever')) return;
+                        if (lowerQ.includes('cough') && symptoms.includes('Cough')) return;
+                        qSet.add(q.text);
+                    }
+                }
+            });
+        }
     }
     return { questions: Array.from(qSet) };
 }
@@ -424,6 +446,20 @@ function localRunTriage(symptoms, answers = {}) {
                 }
             }
         }
+
+        if (answers && Object.keys(answers).length > 0) {
+            Object.keys(answers).forEach((questionText) => {
+                const isRelevant = cond.questions && cond.questions.some(q =>
+                    (typeof q === 'string' && q === questionText) ||
+                    (typeof q === 'object' && q.text === questionText)
+                );
+                if (isRelevant && answers[questionText] === 'Yes') {
+                    scoreBonus += 15;
+                    explanations.push(`Positive response to diagnostic follow-up`);
+                }
+            });
+        }
+
         const baseScore = cond.symptoms.length > 0
             ? (matchedCount / cond.symptoms.length) * 100 : 0;
         return {
@@ -583,15 +619,19 @@ el.btnNext1.addEventListener('click', async () => {
     el.btnNext1.textContent = "Next: Follow-up Questions";
     state.answers = {};
     if (res && res.questions && res.questions.length > 0) {
-        el.questionsContainer.innerHTML = res.questions.map((q, i) => `
-      <div class="question-item">
-        <h4>${q}</h4>
-        <div class="radio-group" data-q="${q}">
-          <label class="radio-label"><input type="radio" name="q_${i}" value="Yes" onchange="updateAnswer('${q}', 'Yes')"> Yes</label>
-          <label class="radio-label"><input type="radio" name="q_${i}" value="No" onchange="updateAnswer('${q}', 'No')"> No</label>
-        </div>
-      </div>
-    `).join('');
+        el.questionsContainer.innerHTML = res.questions.map((q, i) => {
+            // Escape any quotes in the data attribute
+            const safeQ = q.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+            return `
+            <div class="question-item">
+              <h4>${q}</h4>
+              <div class="radio-group" data-q="${safeQ}">
+                <label class="radio-label"><input type="radio" name="q_${i}" value="Yes" onchange="updateAnswer(${i}, 'Yes')"> Yes</label>
+                <label class="radio-label"><input type="radio" name="q_${i}" value="No" onchange="updateAnswer(${i}, 'No')"> No</label>
+              </div>
+            </div>
+            `;
+        }).join('');
     } else {
         el.questionsContainer.innerHTML = `<p style="color:var(--text-muted)">No specific follow-up questions needed. You can proceed.</p>`;
     }
@@ -600,7 +640,11 @@ el.btnNext1.addEventListener('click', async () => {
     resetTriageStep(2);
 });
 
-window.updateAnswer = (q, ans) => { state.answers[q] = ans; };
+window.updateAnswer = (qIdx, ans) => {
+    // We retrieve the question text from the DOM to avoid quote escaping issues
+    const qText = document.querySelector(`[name="q_${qIdx}"]`).closest('.radio-group').dataset.q;
+    state.answers[qText] = ans;
+};
 window.resetTriageStep = (step) => {
     document.querySelectorAll('.triage-step').forEach(e => { e.classList.remove('active'); e.classList.add('hidden'); });
     const target = document.getElementById(`triage-step-${step}`);
@@ -701,14 +745,73 @@ document.getElementById('btn-save-assessment').addEventListener('click', async (
     btn.textContent = "Saved ✓";
 });
 
+window.exportAssessment = async () => {
+    if (!state.triageResult) {
+        showToast('No assessment to export.', 'error');
+        return;
+    }
+
+    const patient = await askPatientDetails();
+    if (!patient) return;   // user cancelled
+
+    let content = "JEEVAN TRIAGE ASSESSMENT REPORT\n";
+    content += "================================\n\n";
+
+    content += "PATIENT DETAILS:\n";
+    content += `Name: ${patient.patientName}\n`;
+    content += `Assessment Date: ${patient.assessmentDate}\n`;
+    content += `Attending: ${state.user?.name || 'Unknown'}\n`;
+    content += "--------------------------------\n\n";
+
+    content += "SYMPTOMS REPORTED:\n";
+    Array.from(state.selectedSymptoms).forEach(s => content += `- ${s}\n`);
+
+    if (Object.keys(state.answers).length > 0) {
+        content += "\nFOLLOW-UP ANSWERS:\n";
+        for (const [q, a] of Object.entries(state.answers)) {
+            content += `- Q: ${q}\n  A: ${a}\n`;
+        }
+    }
+
+    content += "\nTRIAGE RESULT:\n";
+    content += `Risk Level: ${state.triageResult.riskLevel || 'Unknown'}\n`;
+    content += `Recommended Action: ${state.triageResult.recommendations || state.triageResult.action || 'None'}\n\n`;
+
+    if (state.triageResult.conditions) {
+        content += "SUSPECTED CONDITIONS (Confidence):\n";
+        state.triageResult.conditions.forEach(c => {
+            content += `- ${c.name} (${c.score}%)\n`;
+        });
+    }
+
+    if (state.triageResult.explanation) {
+        content += "\nCLINICAL REASONING:\n";
+        state.triageResult.explanation.forEach(e => content += `- ${e}\n`);
+    }
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Triage_Report_${patient.patientName.replace(/\s+/g, '_')}_${Date.now()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast('Analysis exported successfully.', 'success');
+};
+
 window.resetTriage = () => {
     state.selectedSymptoms.clear();
     state.answers = {};
     state.triageResult = null;
     el.btnNext1.disabled = true;
     const btn = document.getElementById('btn-save-assessment');
-    btn.disabled = false;
-    btn.textContent = "Save Assessment";
+    if (btn) {
+        btn.disabled = false;
+        btn.textContent = "Save Assessment";
+    }
     loadTriageData();
     resetTriageStep(1);
 };
