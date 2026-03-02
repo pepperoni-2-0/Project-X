@@ -998,8 +998,7 @@ window.deleteAssessmentRecord = async function (id) {
     } catch { /* offline — local record already gone */ }
 };
 
-function loadAssessments() {
-    const data = localReadAssessments();
+function renderAssessmentsTable(data) {
     const tbody = document.getElementById('assessments-table-body');
     const pending = getPendingIds();
 
@@ -1008,7 +1007,10 @@ function loadAssessments() {
         return;
     }
 
-    tbody.innerHTML = [...data].reverse().map(a => {
+    // Sort by Date descending instead of reverse() since merged data could be out of order
+    const sortedData = [...data].sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
+
+    tbody.innerHTML = sortedData.map(a => {
         const isPending = pending.has(a.id);
         const risk = (a.result?.riskLevel || 'low').toLowerCase();
         return `<tr>
@@ -1034,6 +1036,34 @@ function loadAssessments() {
       </td>
     </tr>`;
     }).join('');
+}
+
+async function loadAssessments() {
+    // 1. Instant Offline Render
+    const localData = localReadAssessments();
+    renderAssessmentsTable(localData);
+
+    // 2. Background Network Pull (Optimistic UI)
+    try {
+        const res = await fetch(`${SYNC_API_BASE}/assessments`, { signal: AbortSignal.timeout(5000) });
+        if (!res.ok) return;
+        const cloudData = await res.json();
+
+        if (Array.isArray(cloudData) && cloudData.length > 0) {
+            // Merge cloud data with local data, deduping by ID
+            const mergedMap = new Map();
+            localData.forEach(a => mergedMap.set(a.id, a));
+            cloudData.forEach(a => mergedMap.set(a.id, a));
+
+            const mergedArray = Array.from(mergedMap.values());
+            localWriteAssessments(mergedArray);
+
+            // 3. Re-render gracefully
+            renderAssessmentsTable(mergedArray);
+        }
+    } catch {
+        // Silently fail if offline or server timeout; user still sees their localData
+    }
 }
 
 // Update the assessments table header
