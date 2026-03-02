@@ -1,5 +1,11 @@
 const API_BASE = '/api';
 
+// 🌐 MASTER CLOUD SYNC
+// If the app is running on a local machine (via the .exe or localhost), we diverge the sync endpoints
+// so that offline reports are pushed directly to the central, hosted Render server rather than the local machine's database.
+const isLocalApp = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const SYNC_API_BASE = isLocalApp ? 'https://jeevan-kvmr.onrender.com/api' : '/api';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // LOCAL STORAGE KEYS
 // ─────────────────────────────────────────────────────────────────────────────
@@ -102,7 +108,7 @@ async function attemptServerSync() {
     if (toSync.length === 0) { savePendingIds(new Set()); updatePendingBadge(); return; }
 
     try {
-        const res = await fetch(`${API_BASE}/sync/push`, {
+        const res = await fetch(`${SYNC_API_BASE}/sync/push`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ assessments: toSync }),
@@ -985,7 +991,7 @@ window.deleteAssessmentRecord = async function (id) {
 
     // Best-effort server delete (silent failure if offline)
     try {
-        await fetch(`${API_BASE}/assessment/${id}`, {
+        await fetch(`${SYNC_API_BASE}/assessment/${id}`, {
             method: 'DELETE',
             signal: AbortSignal.timeout(5000)
         });
@@ -1342,7 +1348,12 @@ el.btnClearCanvas.addEventListener('click', () => {
 let _wasOnline = true;
 
 async function updateSyncStatus() {
-    const res = await apiGet('/sync/status');
+    let res = null;
+    try {
+        const r = await fetch(`${SYNC_API_BASE}/sync/status`, { signal: AbortSignal.timeout(5000) });
+        if (r.ok) res = await r.json();
+    } catch (err) { }
+
     const span = document.querySelector('.status-text');
     const badge = document.getElementById('sync-status');
     const isOnline = res && res.status === 'Online';
