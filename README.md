@@ -88,7 +88,7 @@ The solution focuses on:
 ## 3. Proposed Solution
 
 ### Solution Overview
-MedFlow is an offline-first hybrid triage platform that allows:
+JEEVAN is an offline-first hybrid triage platform that allows:
 
 - Doctors to design triage protocols using decision nodes and questions
 - Healthcare workers to perform guided patient assessments
